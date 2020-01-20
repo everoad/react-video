@@ -33,10 +33,21 @@ const PostViewer = ({match, location}) => {
 const PostViewerContent = styled.div`
   padding: 2rem;
   .video-wrapper {
+    position: relative;
     display: inline-block;
     vertical-align: top;
     width: calc(100% - 500px - 1rem);
+    height: 0;
+    padding-bottom: calc(56.25% - 288px);
     margin: 0.5rem;
+  }
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
   }
   .list-wrapper {
     display: inline-block;

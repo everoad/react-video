@@ -19,17 +19,19 @@ const PostContainer = () => {
   }, [])
 
   const getData = async () => {
-    const res = await googleAPI.getYoutubeVideos()
     let channelInfo
-    const items = res.data.items.filter(one => {
-      if (one.id.kind.indexOf('video') > -1) {
+    const res = await googleAPI.getYoutubeVideos({
+      q: "장삐쭈"
+    })
+    const items = res.data.items.filter(item => {
+      if (item.id.kind.indexOf('video') > -1) {
         return true
       } else {
-        channelInfo = one
+        channelInfo = item
         return false
       }
     })
-    items.forEach(one => one.channelInfo = channelInfo)
+    items.forEach(item => item.channelInfo = channelInfo)
     setVideos(items)
   }
 

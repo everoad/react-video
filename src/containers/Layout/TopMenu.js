@@ -10,7 +10,7 @@ import { Button } from "../../components/Element"
 
 const menus = [
   {
-    text: 'Home', url: '/'
+    text: 'Home', url: '/home'
   },
   { 
     text: 'Post', url: '/post' 
@@ -21,7 +21,7 @@ const menus = [
   { 
     text: '메뉴1', 
     child: [ 
-      { text: 'first', url: '/test1' }, 
+      { text: 'first', url: '/post' }, 
       { text: 'second', url: '/test2' }
     ] 
   },
@@ -35,15 +35,25 @@ const MenuItem = ({ item }) => {
 
 
   const isActive = (match, location) => {
+    console.log(location)
     if (!match) {
-      const result = item.child.filter(one => one.url === location.pathname)
+      const result = item.child.filter(one => one.url === location.pathname)     
       if (result.length === 0) {
-        setActive(false)
+        setActive(false) 
       }
       return false
     }
     setActive(true)
     return true
+  }
+
+  const isActiveForOne = (match, location) => {
+    if (match || location.pathname.indexOf(item.url) > -1) {
+      setActive(true)
+      return true
+    }
+    setActive(false)
+    return false
   }
   
 
@@ -67,7 +77,7 @@ const MenuItem = ({ item }) => {
   } 
   
   return (
-    <li><NavLink activeClassName="menu-active" exact to={item.url}>{item.text}</NavLink></li>
+    <li><NavLink activeClassName="menu-active" isActive={isActiveForOne} exact to={item.url}>{item.text}</NavLink></li>
   )
 }
 
@@ -110,6 +120,7 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   background-color: #fff;
+  z-index: 10;
   >div {
     padding: 0 0.8rem;
     &:first-child {

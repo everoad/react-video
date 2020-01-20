@@ -9,9 +9,9 @@ import HomeContainer from "./Home"
 const MainRoutes = () => {
   return (
     <Switch>
-      <Route path="/" exact component={HomeContainer} />
+      <Route path="/home" exact component={HomeContainer} />
       <Route path="/post" exact component={PostContainer} />
-      <Route path="/post/:videoId" exact component={PostViewer} />
+      <Route path="/post/:videoId" component={PostViewer} />
       <Route path="/about" component={AboutContainer} />
       <Route path="/test1" component={PostContainer} />
     </Switch>
