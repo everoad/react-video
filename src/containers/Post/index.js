@@ -20,7 +20,7 @@ const PostContainer = () => {
 
   const getData = async () => {
     let channelInfo
-    const res = await googleAPI.getYoutubeVideos({
+    const res = await googleAPI.searchYoutubeVideos({
       q: "장삐쭈"
     })
     const items = res.data.items.filter(item => {

@@ -35,7 +35,6 @@ const MenuItem = ({ item }) => {
 
 
   const isActive = (match, location) => {
-    console.log(location)
     if (!match) {
       const result = item.child.filter(one => one.url === location.pathname)     
       if (result.length === 0) {

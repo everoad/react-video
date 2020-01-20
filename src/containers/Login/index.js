@@ -27,11 +27,11 @@ const LoginContainer = () => {
 
   const handleClick = () => {
     sessionStorage.setItem("token", "hihi")
-    history.push("/")
+    history.push("/home")
   }
 
   if (sessionStorage.getItem('token')) {
-    return <Redirect to="/" />
+    return <Redirect to="/home" />
   }
 
   return (
