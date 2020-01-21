@@ -21,7 +21,7 @@ const menus = [
   { 
     text: '메뉴1', 
     child: [ 
-      { text: 'first', url: '/post' }, 
+      { text: 'first', url: '/test1' }, 
       { text: 'second', url: '/test2' }
     ] 
   },
@@ -34,10 +34,15 @@ const MenuItem = ({ item }) => {
   const [active, setActive] = useState(false)
 
 
-  const isActive = (match, location) => {
+  const isActiveWithChild = (match, location, data) => {
     if (!match) {
-      const result = item.child.filter(one => one.url === location.pathname)     
-      if (result.length === 0) {
+      if (location.pathname.indexOf(data.url) > -1) {
+        setActive(true)
+        return true
+      }
+      const result = item.child.filter(one => one.url === location.pathname)    
+      const matchChild = item.child.filter(one => location.pathname.indexOf(one.url) > -1) 
+      if (result.length === 0 && matchChild.length === 0) {
         setActive(false) 
       }
       return false
@@ -46,7 +51,7 @@ const MenuItem = ({ item }) => {
     return true
   }
 
-  const isActiveForOne = (match, location) => {
+  const isActive = (match, location) => {
     if (match || location.pathname.indexOf(item.url) > -1) {
       setActive(true)
       return true
@@ -67,7 +72,7 @@ const MenuItem = ({ item }) => {
         <ul className="child-menu">
           {item.child.map((one, i) => (
             <li key={i} style={{display: visible ? 'block' : 'none'}}>
-              <NavLink activeClassName="menu-active" isActive={isActive} exact to={one.url}>{one.text}</NavLink>
+              <NavLink activeClassName="menu-active" isActive={(match, location) => isActiveWithChild(match, location, one)} exact to={one.url}>{one.text}</NavLink>
             </li>
           ))}
         </ul>
@@ -76,7 +81,7 @@ const MenuItem = ({ item }) => {
   } 
   
   return (
-    <li><NavLink activeClassName="menu-active" isActive={isActiveForOne} exact to={item.url}>{item.text}</NavLink></li>
+    <li><NavLink activeClassName="menu-active" isActive={isActive} exact to={item.url}>{item.text}</NavLink></li>
   )
 }
 

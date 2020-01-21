@@ -14,6 +14,34 @@ const initVideo = {
   publishedAt: '' 
 }
 
+
+const mock = function () {
+  var arr = []
+  for (let i = 0; i < 20; i++) {
+    arr.push({
+      title: `Hello World${i}`
+    })
+  }
+  return arr
+} ()
+
+
+const HorizonalVideoItem = ({ item }) => {
+  return (
+    <HorizonalVideoItemContent>
+      {item.title}
+    </HorizonalVideoItemContent>
+  )
+}
+
+const HorizonalVideoItemContent = styled.div`
+  width: 100%;
+  height: 6rem;
+  box-shadow: 0px 0px 1px #555 inset;
+`
+const exp = /(((http(s)?:\/\/)\S+(\.[^(\n|\t|\s,)]+)+)|((http(s)?:\/\/)?(([a-zA-z\-_]+[0-9]*)|([0-9]*[a-zA-z\-_]+)){2,}(\.[^(\n|\t|\s,)]+)+))+/gi
+
+
 const PostViewer = ({match, location}) => {
   const [video, setVideo] = useState(initVideo)
 
@@ -41,6 +69,19 @@ const PostViewer = ({match, location}) => {
     }
   }
 
+  const checkDescription = (line) => {
+    let urls = line.match(exp)
+
+    
+
+    return (
+      <span>
+       
+
+      </span>
+    )
+  }
+
 
   return (
     <PostViewerContent>
@@ -52,11 +93,18 @@ const PostViewer = ({match, location}) => {
           />
         </div>
         <div className="video-title">{video.title}</div>
-        <div>{video.channelTitle}|{moment(video.publishedAt).format("YYYY/MM/DD")}</div>
-        <div>{video.description}</div>
+        <div className="video-info">
+          <span className="video-owner">{video.channelTitle}</span>
+          <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
+        </div>
+        <div className="video-description">
+          {video.description.split('\n').map(line => {
+            return (<span>{line.replace(exp, '<a href="$&"/>$&</a>')}<br/></span>)
+          })}
+        </div>
       </div>
       <div className="list-wrapper">
-        PostList!!
+        {mock.map((one, i) => <HorizonalVideoItem key={i} item={one} />)}
       </div>
     </PostViewerContent>
   )
@@ -79,7 +127,21 @@ const PostViewerContent = styled.div`
     .video-title {
       font-size: 1.2rem;
       font-weight: 550;
-      padding: 0.5rem;
+      padding: 1rem 0.5rem;
+    }
+    .video-info {
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.1);
+      padding-bottom: 1rem;
+    }
+    .video-owner {
+      padding: 0 0.5rem;
+    }
+    .video-date {
+      padding: 0 0.5rem;
+    }
+    .video-description {
+      padding: 1rem 1rem 1rem 2rem;
+      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.1);
     }
   }
   iframe {
@@ -94,7 +156,8 @@ const PostViewerContent = styled.div`
     display: inline-block;
     width: calc(500px - 1rem);
     margin: 0.5rem;
-    box-shadow: 0px 0px 2px #555;
+    height: 450px;
+    overflow-y: auto;
   }
 `
 
