@@ -69,20 +69,6 @@ const PostViewer = ({match, location}) => {
     }
   }
 
-  const checkDescription = (line) => {
-    let urls = line.match(exp)
-
-    
-
-    return (
-      <span>
-       
-
-      </span>
-    )
-  }
-
-
   return (
     <PostViewerContent>
       <div className="container">
@@ -98,9 +84,7 @@ const PostViewer = ({match, location}) => {
           <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
         </div>
         <div className="video-description">
-          {video.description.split('\n').map(line => {
-            return (<span>{line.replace(exp, '<a href="$&"/>$&</a>')}<br/></span>)
-          })}
+          {video.description.split('\n').map(line => <span>{line}<br/></span>)}
         </div>
       </div>
       <div className="list-wrapper">
