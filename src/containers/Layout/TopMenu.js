@@ -63,12 +63,11 @@ const MenuItem = ({ item }) => {
 
   if (item.child) {
     return (
-      <li 
-        className={active ? "menu-active" : ""}
+      <li
         onMouseOver={() => setVisible(true)} 
         onMouseLeave={() => setVisible(false)}
       >
-        {item.text}
+        <NavLink className={active ? "menu-active" : ""} to="#">{item.text}</NavLink>
         <ul className="child-menu">
           {item.child.map((one, i) => (
             <li key={i} style={{display: visible ? 'block' : 'none'}}>
@@ -106,7 +105,7 @@ const TopMenu = () => {
         <div className="brand-name"><NavLink to="/">React Template</NavLink></div>
       </div>
       <div>
-        <Button className="btn-default" onClick={logout}>Logout</Button>  
+        <Button className="btn-none" onClick={logout}>Logout</Button>  
       </div>
     </Header>
   )
@@ -147,6 +146,9 @@ const Header = styled.header`
     list-style: none;
     padding: 0;
     margin: 0;
+    a {
+      opacity: 0.6;
+    }
     >li {
       display: inline-block;
       vertical-align: top;
@@ -157,10 +159,13 @@ const Header = styled.header`
     >li>a {
       padding: 1.2rem;
       width: 100%;
+      cursor: pointer;
     }
     >li:hover {
-      background-color: #eee;
-      cursor: pointer;
+      >a {
+        opacity: 1 !important;
+        font-weight: 550;
+      }
     }
   }
   .child-menu {
@@ -172,22 +177,28 @@ const Header = styled.header`
     >li {
       width: 8rem;
       text-align: left;
-      background-color: #eee;
+      background-color: #fff;
       padding: 0.8rem;
+      &:first-child {
+        box-shadow: 0px 3px 2px -2px #888888 inset;
+      }
+      &:last-child {
+        border-radius: 0px 0px 3px 3px;
+      }
     }
     >li>a {
       padding: 0.8rem;
     }
     >li:hover {
-      background-color: #ddd;
+      >a {
+        opacity: 1 !important;
+        font-weight: 550;
+      }
     }
   }
-  .menu-active {
-    color: #333;
+  a.menu-active {
+    opacity: 1 !important;
     font-weight: 550;
-    li {
-      font-weight: normal;
-    }
   }
 `
 

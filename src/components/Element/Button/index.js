@@ -19,6 +19,9 @@ const CustomButton = styled.button`
   border: none;
   border-radius: 3px;
   text-align: center;
+  &+button {
+    margin-left: 0.2rem;
+  }
   &:hover {
     cursor: pointer;
     box-shadow: 0px 0px 0px 1px #555 inset;
@@ -50,10 +53,19 @@ const CustomButton = styled.button`
   &.btn-default {
     background-color: ${baseStyle.color.default.normal};
     color: ${baseStyle.color.default.font.normal};
-    box-shadow: 0px 0px 0px 1px #555 inset;
+    box-shadow: 0px 0px 0px 1px ${baseStyle.color.default.font.normal} inset;
     &:hover {
       background-color: ${baseStyle.color.default.active};
       color: ${baseStyle.color.default.font.active};
+    }
+  }
+  &.btn-none {
+    background-color: #fff;
+    color: ${baseStyle.color.default.font.normal};
+    opacity: 0.7;
+    &:hover {
+      opacity: 1;
+      box-shadow: none;
     }
   }
   &.btn-block {

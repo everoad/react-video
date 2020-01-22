@@ -39,7 +39,7 @@ const HorizonalVideoItemContent = styled.div`
   height: 6rem;
   box-shadow: 0px 0px 1px #555 inset;
 `
-const exp = /(((http(s)?:\/\/)\S+(\.[^(\n|\t|\s,)]+)+)|((http(s)?:\/\/)?(([a-zA-z\-_]+[0-9]*)|([0-9]*[a-zA-z\-_]+)){2,}(\.[^(\n|\t|\s,)]+)+))+/gi
+//const exp = /(((http(s)?:\/\/)\S+(\.[^(\n|\t|\s,)]+)+)|((http(s)?:\/\/)?(([a-zA-z\-_]+[0-9]*)|([0-9]*[a-zA-z\-_]+)){2,}(\.[^(\n|\t|\s,)]+)+))+/gi
 
 
 const PostViewer = ({match, location}) => {
@@ -57,17 +57,17 @@ const PostViewer = ({match, location}) => {
 
 
   useEffect(() => {
-    getData()
-  }, [])
-
-  const getData = async () => {
-    const res = await googleAPI.findYoubuteVideoList({
-      id: videoId
-    })
-    if (res.data.items && res.data.items.length > 0) {
-      setVideo(res.data.items[0].snippet)
+    const getData = async () => {
+      const res = await googleAPI.findYoubuteVideoList({
+        id: videoId
+      })
+      if (res.data.items && res.data.items.length > 0) {
+        setVideo(res.data.items[0].snippet)
+      }
     }
-  }
+
+    getData()
+  }, [videoId])
 
   return (
     <PostViewerContent>

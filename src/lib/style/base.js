@@ -27,6 +27,14 @@ const baseStyles = {
         active: 'rgba(255, 255, 255, 0.8)'
       }
     },
+    warn: {
+      normal: '#f0ad4e',
+      active: '#ec971f',
+      font: {
+        normal: 'rgba(255, 255, 255, 0.8)',
+        active: 'rgba(255, 255, 255, 0.8)'
+      }
+    },
     default: {
       normal: '#fff',
       active: '#555',

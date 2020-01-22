@@ -5,8 +5,6 @@ import * as googleAPI from "../../services/googleAPI"
 
 import styled from "styled-components"
 
-import baseStyle from "../../lib/style/base"
-
 import PostItem from "./PostItem"
 
 
@@ -21,8 +19,10 @@ const PostContainer = () => {
   const getData = async () => {
     let channelInfo
     const res = await googleAPI.searchYoutubeVideos({
-      q: "장삐쭈"
+      q: "장삐쭈",
+      order: "date"
     })
+    console.log(res.data)
     const items = res.data.items.filter(item => {
       if (item.id.kind.indexOf('video') > -1) {
         return true

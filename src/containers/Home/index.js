@@ -24,8 +24,8 @@ const HomeContainer = () => {
           Hello Body
         </Modal.Body>
         <Modal.Footer>
-          <Button className="btn-default" onClick={handleClose}>닫기</Button>
-          <Button className="btn-primary">저장</Button>
+          <Button className="btn-none btn-sm" onClick={handleClose}>닫기</Button>
+          <Button className="btn-none btn-sm">저장</Button>
         </Modal.Footer>
       </Modal.Container>
     </div>

@@ -10,16 +10,15 @@ const PostItem = ({ item, onClick }) => {
 
   const {
     title,
-    channelId,
+    //channelId,
     channelTitle,
-    description,
     publishedAt,
     thumbnails
   } = item.snippet
 
   return (
     <PostItemContent url={item.channelInfo.snippet.thumbnails.default.url}>
-      <img src={thumbnails.medium.url} width="100%" onClick={onClick} />
+      <img src={thumbnails.medium.url} width="100%" onClick={onClick} alt="test" />
       <div>
         <div className="profile">
           <div></div>
