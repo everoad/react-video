@@ -1,56 +1,79 @@
-import React, { useState, useEffect } from "react"
-import { useHistory } from "react-router-dom"
-
-import * as googleAPI from "../../services/googleAPI"
+import React, { useState } from "react"
 
 import styled from "styled-components"
 
-import PostItem from "./PostItem"
+import useInputs from "../../hooks/useInputs"
 
+import Modal from "../../components/Modal"
+
+import PostCategoryWrapper from "./PostCategoryWrapper"
+import { Button, Input, Select } from "../../components/Element"
+
+const initCategory = {
+  type: '',
+  keyword: ''
+}
+
+const mock = [
+  { type: 'keyword', keyword: '장삐쭈' },
+  { type: 'keyword', keyword: '노래모음'}
+]
 
 const PostContainer = () => {
-  const [videos, setVideos] = useState([])
-  const history = useHistory()
+  const [categoryList, setCategoryList] = useState(mock)
+  const [category, onChangeCategory] = useInputs(initCategory)
+  const [open, setOpen] = useState(false)
 
-  useEffect(() => {
-    getData()
-  }, [])
 
-  const getData = async () => {
-    let channelInfo
-    const res = await googleAPI.searchYoutubeVideos({
-      q: "장삐쭈",
-      order: "date"
-    })
-    console.log(res.data)
-    const items = res.data.items.filter(item => {
-      if (item.id.kind.indexOf('video') > -1) {
-        return true
-      } else {
-        channelInfo = item
-        return false
-      }
-    })
-    items.forEach(item => item.channelInfo = channelInfo)
-    setVideos(items)
+  const handleAddCategory = () => {
+    setCategoryList(categoryList.concat([ category ]))
+    handleCloseModal()
   }
 
+  const handleCloseModal = () => setOpen(false)
 
-  const handleClickItem = (item) => {
-    history.push(`/post/${item.id.videoId}?id=${item.snippet.channelId}`)
-  }
-
+  const handleOpenModal = () => setOpen(true)
 
   return (
     <PostContent>
-      <h3>Post!!!!</h3>
-      {videos.map((item, i) => (<PostItem key={i} item={item} onClick={() => handleClickItem(item)} />))}
+      <Button className="btn-none" onClick={handleOpenModal}>설정</Button>
+      {categoryList.map((one, i) => (
+        <PostCategoryWrapper key={i} {...one} />
+      ))}
+      <Modal.Container open={open}>
+        <Modal.Header title={"카테고리 추가"} onClose={handleCloseModal}  />
+        <Modal.Body>
+          <div className="modal-input-wrapper">
+            <Select 
+              name="type" 
+              value={category.type} onChange={onChangeCategory}>
+              <option value="keyword">검색어</option>
+              <option value="channel">채널</option>
+            </Select>
+            <Input 
+              type="text" name="keyword" 
+              value={category.keyword} onChange={onChangeCategory} 
+            />
+            <Button className="btn-default btn-sm" onClick={handleAddCategory}>추가</Button>
+          </div>
+          <ul>
+            {categoryList.map((one, i) => (
+              <li key={i}>{one.keyword}</li>
+            ))}
+          </ul>
+        </Modal.Body>
+      </Modal.Container>
     </PostContent>
   )
 }
 
 const PostContent = styled.div`
-
+  .modal-input-wrapper {
+    display: flex;
+    input, select {
+      width: 30%;
+    }
+  }
 `
 
 export default PostContainer

@@ -5,18 +5,22 @@ import styled from "styled-components"
 import baseStyle from "../../../lib/style/base"
 
 
-const Input = (props, ref) => {
+const Select = (props, ref) => {
   const inputRef = useRef()
   useImperativeHandle(ref, () => ({
     focus: () => {
       inputRef.current.focus()
     }
   }))
-  return <CustomInput {...props} ref={inputRef} />
+  return (
+    <CustomSelect {...props} ref={inputRef}>
+      {props.children}
+    </CustomSelect>    
+  )
 }
 
 
-const CustomInput = styled.input`
+const CustomSelect = styled.select`
   width: 100%;
   padding: 0.8rem;
   font-size: 1rem;
@@ -33,4 +37,4 @@ const CustomInput = styled.input`
   }
 `
 
-export default memo(forwardRef(Input))
+export default memo(forwardRef(Select))

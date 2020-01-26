@@ -17,12 +17,12 @@ const PostItem = ({ item, onClick }) => {
   } = item.snippet
 
   return (
-    <PostItemContent url={item.channelInfo.snippet.thumbnails.default.url}>
+    <PostItemContent>
       <img src={thumbnails.medium.url} width="100%" onClick={onClick} alt="test" />
       <div>
-        <div className="profile">
+        {/* <div className="profile">
           <div></div>
-        </div>
+        </div> */}
         <div className="description">
           <div className="video-title" title={title} onClick={onClick}>{title}</div>
           <div>{channelTitle}</div>
@@ -35,15 +35,16 @@ const PostItem = ({ item, onClick }) => {
 
 
 const PostItemContent = styled.div`
-  display: inline-block;
-  vertical-align: top;
   margin: 10px;
+  display: inline-block;
   @media screen and (min-width: ${baseStyle.screenBoundWidth}px) {
+    flex: 0 0 auto;
     width: calc(20% - 20px);
     height: 0;
     padding-bottom: 16%;
   }
   @media screen and (max-width: ${baseStyle.screenBoundWidth}px) {
+    flex: 0 0 auto;
     width: calc(25% - 20px);
     height: 0;
     padding-bottom: 21%;
@@ -58,7 +59,7 @@ const PostItemContent = styled.div`
       display: inline-block;
       width: 15%;
       >div {
-        background-image: url(${props => props.url});
+        // background-image: url(${props => props.url});
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
@@ -70,8 +71,9 @@ const PostItemContent = styled.div`
     }
     .description {
       display: inline-block;
-      width: calc(85% - 0.8rem);
-      padding-left: 0.8rem;
+      width: 100%;
+      //width: calc(85% - 0.8rem);
+      //padding-left: 0.8rem;
       >div {
         padding-bottom: 0.1rem;
       }
