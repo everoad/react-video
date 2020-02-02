@@ -31,6 +31,9 @@ const CustomInput = styled.input`
   &:focus {
     border: 0.5px solid ${baseStyle.color.primary.active};
   }
+  &.input-sm {
+    padding: 0.5rem;
+  }
 `
 
 export default memo(forwardRef(Input))

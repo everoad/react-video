@@ -83,9 +83,9 @@ const PostViewer = ({match, location}) => {
           <span className="video-owner">{video.channelTitle}</span>
           <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
         </div>
-        <div className="video-description">
+        {/* <div className="video-description">
           {video.description.split('\n').map(line => <span>{line}<br/></span>)}
-        </div>
+        </div> */}
       </div>
       <div className="list-wrapper">
         {mock.map((one, i) => <HorizonalVideoItem key={i} item={one} />)}

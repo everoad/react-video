@@ -3,11 +3,11 @@ import React from "react"
 import styled from "styled-components"
 
 
-const ModalContainer = ({ children, open = false }) => {
+const ModalContainer = ({ children, open = false, width = 500 }) => {
     return (
       <>
         {open && (
-          <ModalContent>
+          <ModalContent width={width}>
             <section className="modal-container">
               {children}
             </section>
@@ -22,7 +22,7 @@ const ModalContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -30,7 +30,7 @@ const ModalContent = styled.div`
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
   .modal-container {
-    width: 500px;
+    width: ${props => props.width}px;
     background-color: #fff;
     margin-bottom: 100px;
     border-radius: 5px;

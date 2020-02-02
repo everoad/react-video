@@ -23,7 +23,7 @@ const Select = (props, ref) => {
 const CustomSelect = styled.select`
   width: 100%;
   padding: 0.8rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   border-radius: 2px;
   border: 0.5px solid #d2d6de;
   outline: none;
@@ -34,6 +34,9 @@ const CustomSelect = styled.select`
   box-sizing: border-box;
   &:focus {
     border: 0.5px solid ${baseStyle.color.primary.active};
+  }
+  &.input-sm {
+    padding: 0.5rem;
   }
 `
 

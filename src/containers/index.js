@@ -22,7 +22,6 @@ const MainContainer = () => {
 
 const Body = styled.div`
   margin-top: ${baseStyle.topMenuHeight}px;
-  margin-bottom: 50px;
   padding-top: 5px;
   padding-left: 25px;
   padding-right: 25px;
