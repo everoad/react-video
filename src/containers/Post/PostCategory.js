@@ -27,6 +27,7 @@ const PostCategory = (props) => {
   const [videos, setVideos] = useState([])
   const [nextPageToken, setNextPageToken] = useState(null)
   const [height, setHeight] = useState(0)
+  const [isLoading, setLoading] = useState(false)
   
 
   useEffect(() => {
@@ -37,6 +38,7 @@ const PostCategory = (props) => {
     }
     
     const getData = async () => {
+      setLoading(true)
       const res = await googleAPI.searchYoutubeVideos({
         q: keyword,
         maxResults: status === 2 ? 20 : 4,
@@ -48,6 +50,8 @@ const PostCategory = (props) => {
       } else {
         setVideos(res.data.items)
       }
+
+      setLoading(false)
       setNextPageToken(res.data.nextPageToken)
     }
 
@@ -88,7 +92,10 @@ const PostCategory = (props) => {
         </div>
       </ScrollableAnchor>
       <div className="item-wrapper">
-        {videos.map((item, i) => (<PostItem key={i} item={item} onClick={() => handleClickItem(item)} />))}
+        {isLoading ? 
+        <div>Loading...</div>
+        : 
+        videos.map((item, i) => (<PostItem key={i} item={item} onClick={() => handleClickItem(item)} />))}
       </div>
     </PostCategoryContent>
   )
