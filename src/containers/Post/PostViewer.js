@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
 
 import styled from "styled-components"
-import YouTube from 'react-youtube'
+import YouTube from "react-youtube"
 import moment from "moment"
+
 
 import * as googleAPI from "../../services/googleAPI"
 
@@ -15,48 +16,24 @@ const initVideo = {
 }
 
 
-const mock = function () {
-  var arr = []
-  for (let i = 0; i < 20; i++) {
-    arr.push({
-      title: `Hello World${i}`
-    })
+//const exp = /(((http(s)?:\/\/)\S+(\.[^(\n|\t|\s,)]+)+)|((http(s)?:\/\/)?(([a-zA-z\-_]+[0-9]*)|([0-9]*[a-zA-z\-_]+)){2,}(\.[^(\n|\t|\s,)]+)+))+/gi
+const videoOptions = {
+  width: '100%',
+  height: '100%',
+  playerVars: {
+    autoplay: 0
   }
-  return arr
-} ()
-
-
-const HorizonalVideoItem = ({ item }) => {
-  return (
-    <HorizonalVideoItemContent>
-      {item.title}
-    </HorizonalVideoItemContent>
-  )
 }
 
-const HorizonalVideoItemContent = styled.div`
-  width: 100%;
-  height: 6rem;
-  box-shadow: 0px 0px 1px #555 inset;
-`
-//const exp = /(((http(s)?:\/\/)\S+(\.[^(\n|\t|\s,)]+)+)|((http(s)?:\/\/)?(([a-zA-z\-_]+[0-9]*)|([0-9]*[a-zA-z\-_]+)){2,}(\.[^(\n|\t|\s,)]+)+))+/gi
-
-
-const PostViewer = ({match, location}) => {
+const PostViewer = ({ videoId }) => {
   const [video, setVideo] = useState(initVideo)
-
-  const { videoId } = match.params
-
-  const videoOptions = {
-    width: '100%',
-    height: '100%',
-    playerVars: {
-      autoplay: 0
-    }
-  }
+  const [openPopup, setOpenPopup] = useState(false)
 
 
   useEffect(() => {
+
+    window.addEventListener('scroll', handleScroll, true)
+
     const getData = async () => {
       const res = await googleAPI.findYoubuteVideoList({
         id: videoId
@@ -67,28 +44,42 @@ const PostViewer = ({match, location}) => {
     }
 
     getData()
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, [videoId])
+
+
+  const handleScroll = () => {
+    let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    setOpenPopup(scrollTop !== 0)
+    
+  }
+
 
   return (
     <PostViewerContent>
-      <div className="container">
-        <div className="player-container">
-          <YouTube
-            videoId={videoId}
-            opts={videoOptions}
-          />
+      <div className="player-wrapper">
+        <div className={`player-container ${openPopup ? 'move' : ''}`}>
+          <div>
+            <YouTube
+              videoId={videoId}
+              opts={videoOptions}
+            />
+          </div>
         </div>
+      </div>
+
+      <div className={`info-container ${openPopup ? 'move' : ''}`}>
         <div className="video-title">{video.title}</div>
         <div className="video-info">
           <span className="video-owner">{video.channelTitle}</span>
           <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
         </div>
-        {/* <div className="video-description">
-          {video.description.split('\n').map(line => <span>{line}<br/></span>)}
-        </div> */}
-      </div>
-      <div className="list-wrapper">
-        {mock.map((one, i) => <HorizonalVideoItem key={i} item={one} />)}
+        <div className="video-description">
+          {video.description.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}
+        </div>
       </div>
     </PostViewerContent>
   )
@@ -96,18 +87,45 @@ const PostViewer = ({match, location}) => {
 
 
 const PostViewerContent = styled.div`
-  padding: 2rem;
-  .container {
+  padding: 1rem;
+  height: 0;
+  padding-bottom: 35%;
+  .player-wrapper {
     display: inline-block;
     vertical-align: top;
     margin: 0.5rem;
     width: calc(100% - 500px - 1rem);
+    max-width: 888px;
     .player-container {
-      position: relative;
       width: 100%;
-      height: 0;
-      padding-bottom: 56.25%;
+      max-width: 888px;
+      >div {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%;
+      }
+      &.move {
+        width: 400px;
+        position: fixed !important;
+        right: 0;
+        bottom: 1rem;
+      }
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+      }
     }
+
+  }
+  .info-container {
+    display: inline-block;
+    width: calc(500px - 1rem);
+    overflow-y: auto;
     .video-title {
       font-size: 1.2rem;
       font-weight: 550;
@@ -124,24 +142,9 @@ const PostViewerContent = styled.div`
       padding: 0 0.5rem;
     }
     .video-description {
-      padding: 1rem 1rem 1rem 2rem;
+      padding: 1rem 1rem 1rem 1.5rem;
       box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.1);
     }
-  }
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-  }
-  .list-wrapper {
-    display: inline-block;
-    width: calc(500px - 1rem);
-    margin: 0.5rem;
-    height: 450px;
-    overflow-y: auto;
   }
 `
 

@@ -1,53 +1,34 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useState, useEffect } from "react"
 
 import styled from "styled-components"
 
-import useInputs from "../../hooks/useInputs"
+import PostCategory from "./PostCategory"
+import PostViewer from "./PostViewer"
+import PostCategoryList from "./PostCategoryList"
 
-import PostCategoryWrapper from "./PostCategoryWrapper"
-import { Button, Input, Select } from "../../components/Element"
-
-const initCategory = {
-  keyword: ''
-}
 
 const mock = [
   { keyword: '장삐쭈' },
-  { keyword: '노래모음' }
+  { keyword: '노래모음' },
+  { keyword: '축구' },
+  { keyword: '농구' },
+  { keyword: '리그오브레전드' },
 ]
+
+function getStatus(idx, selectedIdx) {
+  return selectedIdx === -1 ? 0 : selectedIdx !== idx ? 1 : 2
+}
 
 const PostContainer = () => {
   const [categoryList, setCategoryList] = useState(mock)
-  //const [category, onChangeCategory] = useInputs(initCategory)
-  const [editCategory, setEditCategory] = useState(initCategory)
+  const [selectedVideoId, setSelectedVideoId] = useState(null)
   const [selectedCategory, setSelectedCategory] = useState(-1)
-  const searchInputRef = useRef()
-
-  useEffect(() => {
-    searchInputRef.current.focus()
-  }, [])
 
 
-  const handleAddCategory = () => {
-    setCategoryList(categoryList.concat([ editCategory ]))
-    setEditCategory({
-      ...editCategory,
-      keyword: ''
-    })
+  const handleAddCategory = (category) => {
+    setCategoryList(categoryList.concat([ category ]))
   }
 
-  const handleChangeEditCategory = (e) => {
-    setEditCategory({
-      ...editCategory,
-      keyword: e.target.value
-    })
-  }
-
-  const handleKeyPressCategory = (e) => {
-    if (e.key === "Enter") {
-      handleAddCategory()
-    }
-  }
 
   const handleChangeSelectedCategory = (idx) => {
     setSelectedCategory(idx)
@@ -55,47 +36,34 @@ const PostContainer = () => {
 
   return (
     <PostContent>
-      <div className="modal-input-wrapper">
-        <Input 
-          type="text" 
-          name="keyword" 
-          placeholder="검색.."
-          ref={searchInputRef}
-          value={editCategory.keyword} 
-          onChange={handleChangeEditCategory}
-          onKeyPress={handleKeyPressCategory} 
-        />
-        <Button 
-          className="btn-none btn-sm" 
-          onClick={handleAddCategory}
-        >
-          추가
-        </Button>
+      <div className="category-wrapper">
+        {selectedVideoId && <PostViewer videoId={selectedVideoId} />}
+        <div>
+          {categoryList.map((one, i) => (
+            <PostCategory 
+              key={i}
+              categoryIdx={i}
+              status={getStatus(i, selectedCategory)}
+              setVideoId={setSelectedVideoId}
+              handleChangeSelectedCategory={handleChangeSelectedCategory}
+              {...one}
+            />
+          ))}
+        </div>
       </div>
-      {categoryList.map((one, i) => (
-        <PostCategoryWrapper 
-          key={i} 
-          categoryIdx={i}
-          selectedCategory={selectedCategory}
-          handleChangeSelectedCategory={handleChangeSelectedCategory}
-          {...one}  
-        />
-      ))}
+      <PostCategoryList
+        categoryList={categoryList}
+        handleAddCategory={handleAddCategory}
+      />
     </PostContent>
   )
 }
 
 const PostContent = styled.div`
-  .modal-input-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    margin: 1rem 0;
-    input {
-      width: 25rem;
-    }
-    button {
-      width: 5rem;
-    }
+  .category-wrapper {
+    width: calc(100% - 250px);
+    display: inline-block;
+    vertical-align: top;
   }
 `
 
