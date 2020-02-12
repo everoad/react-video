@@ -11,16 +11,18 @@ import PostItem from "./PostItem"
 
 
 
-//configureAnchors({offset: -65, scrollDuration: 200})
+configureAnchors({offset: -65, scrollDuration: 200})
 
 const PostCategory = (props) => {
   const {
-    keyword, 
     status,
     categoryIdx,
     setVideoId,
+    category,
     handleChangeSelectedCategory
   } = props
+
+  const { keyword } = category
 
   const [videos, setVideos] = useState([])
   const [nextPageToken, setNextPageToken] = useState(null)
