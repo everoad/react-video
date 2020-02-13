@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 
 import styled from "styled-components"
 
@@ -28,11 +28,6 @@ const PostContainer = () => {
     setCategoryList(categoryList.concat([ category ]))
   }
 
-
-  const handleChangeSelectedCategory = (idx) => {
-    setSelectedCategory(idx)
-  }
-
   return (
     <PostContent>
       <div className="category-wrapper">
@@ -44,7 +39,7 @@ const PostContainer = () => {
               categoryIdx={i}
               status={getStatus(i, selectedCategory)}
               setVideoId={setSelectedVideoId}
-              handleChangeSelectedCategory={handleChangeSelectedCategory}
+              handleChangeSelectedCategory={setSelectedCategory}
               category={one}
             />
           ))}
