@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { memo, useEffect, useState, useCallback } from "react"
 
 import styled from "styled-components"
 import YouTube from "react-youtube"
 import moment from "moment"
-
+import { debounce } from "lodash"
 
 import * as googleAPI from "../../services/googleAPI"
+import baseStyles from "../../lib/style/base"
 
 
 const initVideo = { 
@@ -25,61 +26,76 @@ const videoOptions = {
   }
 }
 
-const PostViewer = ({ videoId }) => {
+const PostViewer = ({ videoId, setVideoId }) => {
   const [video, setVideo] = useState(initVideo)
   const [openPopup, setOpenPopup] = useState(false)
 
 
+  const handleScroll = useCallback(debounce(() => {
+    let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    setOpenPopup(scrollTop !== 0)
+  }, 300), [])
+
+
+  const handleCloseViewer = () => {
+    setVideoId(null)
+  }
+
+
   useEffect(() => {
-
     window.addEventListener('scroll', handleScroll, true)
+    return () => {
+      window.removeEventListener('scroll', handleScroll, true)
+    }
+  }, [handleScroll])
 
+
+  useEffect(() => {
     const getData = async () => {
       const res = await googleAPI.findYoubuteVideoList({
         id: videoId
       })
       if (res.data.items && res.data.items.length > 0) {
         setVideo(res.data.items[0].snippet)
+        handleScroll()
       }
     }
-
     getData()
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [videoId])
-
-
-  const handleScroll = () => {
-    let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
-    setOpenPopup(scrollTop !== 0)
-    
-  }
+  }, [videoId, handleScroll])
 
 
   return (
     <PostViewerContent>
-      <div className="player-wrapper">
-        <div className={`player-container ${openPopup ? 'move' : ''}`}>
-          <div>
-            <YouTube
-              videoId={videoId}
-              opts={videoOptions}
-            />
+      <div>
+        <div className="player-wrapper">
+          <div className={`player-container ${openPopup ? 'move' : ''}`}>
+            <div>
+              <YouTube
+                videoId={videoId}
+                opts={videoOptions}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className={`info-container ${openPopup ? 'move' : ''}`}>
+          <header className="info-header">
+            <div className="profile">
+              <div></div>
+            </div>
+            <div className="video-title">{video.title}</div>
+            <div className="video-info">
+              <span className="video-owner">{video.channelTitle}</span>
+              <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
+            </div>
+          </header>
+          <div className="video-description">
+            {video.description.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}
           </div>
         </div>
       </div>
-
-      <div className={`info-container ${openPopup ? 'move' : ''}`}>
-        <div className="video-title">{video.title}</div>
-        <div className="video-info">
-          <span className="video-owner">{video.channelTitle}</span>
-          <span className="video-date">{moment(video.publishedAt).format("YYYY/MM/DD")}</span>
-        </div>
-        <div className="video-description">
-          {video.description.split('\n').map((line, i) => <span key={i}>{line}<br/></span>)}
-        </div>
+      <div className="player-close">
+        <span onClick={handleCloseViewer}>닫기</span>
       </div>
     </PostViewerContent>
   )
@@ -88,11 +104,13 @@ const PostViewer = ({ videoId }) => {
 
 const PostViewerContent = styled.div`
   padding: 1rem;
-  height: 0;
-  padding-bottom: 35%;
+  min-height: 300px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.1);
+  >div {
+    display: flex;
+    justify-content: center;
+  }
   .player-wrapper {
-    display: inline-block;
-    vertical-align: top;
     margin: 0.5rem;
     width: calc(100% - 500px - 1rem);
     max-width: 888px;
@@ -123,9 +141,7 @@ const PostViewerContent = styled.div`
 
   }
   .info-container {
-    display: inline-block;
     width: calc(500px - 1rem);
-    overflow-y: auto;
     .video-title {
       font-size: 1.2rem;
       font-weight: 550;
@@ -142,10 +158,24 @@ const PostViewerContent = styled.div`
       padding: 0 0.5rem;
     }
     .video-description {
+      height: 132px;
+      overflow-y: auto;
       padding: 1rem 1rem 1rem 1.5rem;
-      box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.1);
+    }
+  }
+  .player-close {
+    width: 100%;
+    text-align: center;
+    margin: 0.5rem 0 1rem;
+    >span {
+      cursor: pointer;
+      color: ${baseStyles.color.primary.active};
     }
   }
 `
 
-export default PostViewer
+const checkProps = (prev, next) => {
+  return prev.videoId === next.videoId
+}
+
+export default memo(PostViewer, checkProps)

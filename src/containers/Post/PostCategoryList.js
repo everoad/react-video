@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { memo, useEffect, useState, useRef } from "react"
 
 import styled from "styled-components"
 
@@ -7,6 +7,7 @@ import baseStyles from "../../lib/style/base"
 
 
 const initCategory = {
+  id: -1,
   keyword: ''
 }
 
@@ -14,11 +15,15 @@ const initCategory = {
 const PostCategoryList = (props) => {
   const {
     categoryList,
-    handleAddCategory
+    handleAddCategory,
+    handleRemoveCategory,
+    setCategoryList
   } = props
 
 
   const [category, setCategory] = useState(initCategory)
+  const overRef = useRef()
+  const dragRef = useRef()
   const searchInputRef = useRef()
 
 
@@ -29,7 +34,7 @@ const PostCategoryList = (props) => {
 
   const handleChangeCategory = (e) => {
     setCategory({
-      ...category,
+      id: categoryList.length + 1,
       keyword: e.target.value
     })
   }
@@ -42,6 +47,46 @@ const PostCategoryList = (props) => {
     }
   }
 
+  const handleClickRemove = (item) => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      handleRemoveCategory(item.id)
+    }
+  }
+
+
+  const dragStart = (e) => {
+    e.dataTransfer.effectAllowed = 'move'
+    let target
+    if (e.target.tagName !== 'LI') {
+      target = e.target.parentNode
+    }
+    else {
+      target = e.target
+    }
+    dragRef.current = target
+    dragRef.current.style.backgroundColor = "rgba(0,0,0,0.1)"
+  }
+
+
+  const endDrop = () => {
+    //TODO 버그 체크.
+    dragRef.current.style.backgroundColor = "rgba(0,0,0,0.05)"
+    var from = Number(dragRef.current.dataset.id)
+    var to = Number(overRef.current.dataset.id)
+    if(from < to) to--
+    categoryList.splice(to, 0, categoryList.splice(from, 1)[0])
+    setCategoryList([...categoryList])
+  }
+
+
+  const dragOver = (e) => {
+    e.preventDefault()
+    if(e.target.getAttribute("draggable") !== "true") return
+    if(!e.target.dataset || e.target.dataset.id === dragRef.current.dataset.id) return 
+    overRef.current = e.target
+    e.currentTarget.insertBefore(dragRef.current, e.target)
+  }
+  
 
   return (
     <PostCategoryListContent>
@@ -56,9 +101,12 @@ const PostCategoryList = (props) => {
           onKeyPress={handleKeyPressCategory} 
         />
       </div>
-      <ul>
+      <ul onDragOver={dragOver}>
         {categoryList.map((one, i) => (
-          <li key={i}><a href={`#${one.keyword}`}>{`#${one.keyword}`}</a></li>
+          <li data-id={i} key={one.id} draggable="true" onDragStart={(e) => dragStart(e, one)} onDragEnd={endDrop}>
+            <a href={`#${one.keyword}`}>{`# ${one.keyword}`}</a>
+            <span onClick={() => handleClickRemove(one)}>×</span>
+          </li>
         ))}
       </ul>
     </PostCategoryListContent>
@@ -86,14 +134,44 @@ const PostCategoryListContent = styled.div`
     list-style: none;
     padding-left: 0;
     >li {
-      display: inline-block;
-      padding: 0.3rem;
+      display: flex;
+      justify-content: space-between;
+      padding: 0.2rem 0.3rem;
+      margin: 0.2rem;
+      border-radius: 3px;
+      background-color: rgba(0,0,0,0.05);
       >a {
         color: ${baseStyles.color.primary.active};
         font-weight: 550;
+        width: 90%;
+      }
+      >span {
+        font-weight: 550;
+        cursor: pointer;
+        width: 10%;
+        text-align: center;
+        &:hover {
+          color: ${baseStyles.color.primary.active};
+        }
+      }
+    }
+    .placeholder {
+      background: rgb(255,240,120);
+      &:before {
+        content: "Drop here";
+        color: rgb(225,210,90);
       }
     }
   }
 `
+
+
+const checkProps = (prev, next) => {
+  if (JSON.stringify(prev.categoryList) !== JSON.stringify(next.categoryList)) {
+    return false
+  }
+  return true
+}
+
 
 export default PostCategoryList

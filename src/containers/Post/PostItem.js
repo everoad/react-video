@@ -10,7 +10,6 @@ const PostItem = ({ item, onClick }) => {
 
   const {
     title,
-    //channelId,
     channelTitle,
     publishedAt,
     thumbnails
@@ -37,18 +36,10 @@ const PostItem = ({ item, onClick }) => {
 const PostItemContent = styled.div`
   margin: 10px;
   display: inline-block;
-  // @media screen and (min-width: ${baseStyle.screenBoundWidth}px) {
-  //   flex: 0 0 auto;
-  //   width: calc(20% - 20px);
-  //   height: 0;
-  //   padding-bottom: 16%;
-  // }
-  // @media screen and (max-width: ${baseStyle.screenBoundWidth}px) {
-    flex: 0 0 auto;
-    width: calc(25% - 20px);
-    height: 0;
-    padding-bottom: 21%;
-  // }
+  flex: 0 0 auto;
+  width: calc(25% - 20px);
+  height: 0;
+  padding-bottom: 21%;
   >img {
     cursor: pointer;
   }
@@ -72,8 +63,6 @@ const PostItemContent = styled.div`
     .description {
       display: inline-block;
       width: 100%;
-      //width: calc(85% - 0.8rem);
-      //padding-left: 0.8rem;
       >div {
         padding-bottom: 0.1rem;
       }

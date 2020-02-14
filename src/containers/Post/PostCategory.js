@@ -13,55 +13,50 @@ import * as googleAPI from "../../services/googleAPI"
 import PostItem from "./PostItem"
 
 
-
 configureAnchors({offset: -65, scrollDuration: 200})
+
+
+const mapItemsToComponent = (items, setVideoId) => {
+  return items.map((item, i) => (<PostItem key={i} item={item} onClick={() => setVideoId(item.id.videoId)} />))
+}
 
 
 const PostCategory = (props) => {
   const {
     status,
-    categoryIdx,
     setVideoId,
     category,
-    handleChangeSelectedCategory
+    handleChangeSelectedCategoryId
   } = props
-  const { keyword } = category
+  const { keyword, id } = category
+
 
   const [videos, setVideos] = useState([])
   const [isLoading, setLoading] = useState(true)
   const [nextPageToken, setNextPageToken] = useState(null)
-  
+  const [search, setSearch] = useState({
+    q: keyword,
+    pageToken: null,
+    maxResults: 16
+  })
 
-  const handleScroll = debounce(() => {
+
+  const handleScroll = useCallback(debounce(() => {
     let scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)
     let scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop)
     let clientHeight = document.documentElement.clientHeight
     if (Math.round(scrollTop) + clientHeight === scrollHeight) {
-      setLoading(true)
+      setSearch(v => ({
+        ...v,
+        pageToken: nextPageToken
+      }))
     }
-  }, 800)
+  }, 500), [nextPageToken])
 
 
-  const getData = useCallback(async () => {
-    const res = await googleAPI.searchYoutubeVideos({
-      q: keyword,
-      maxResults: status === 2 ? 20 : 4,
-      pageToken: status === 2 ? nextPageToken : null
-    })
-    
-    if (status === 2) {
-      setVideos(v => v.concat(res.data.items))
-    } else {
-      setVideos(res.data.items)
-    }
-
-    setNextPageToken(res.data.nextPageToken)
-    setLoading(false)
-
-  }, [keyword, nextPageToken, status])
-
-
-  const handleClickMoreItems = () => handleChangeSelectedCategory(status === 2 ? -1 : categoryIdx)
+  const handleClickMoreItems = () => {
+    handleChangeSelectedCategoryId(status === 2 ? -1 : id)
+  }
 
 
   useEffect(() => {
@@ -70,9 +65,6 @@ const PostCategory = (props) => {
     } else {
       window.addEventListener('scroll', handleScroll, true)
     }
-    if (status !== 1) {
-      setLoading(true)
-    }
     return () => {
       window.removeEventListener('scroll', handleScroll, true)
     }
@@ -80,10 +72,15 @@ const PostCategory = (props) => {
 
 
   useEffect(() => {
-    if (isLoading) {
-      getData()
+    const getData = async () => {
+      setLoading(true)
+      const res = await googleAPI.searchYoutubeVideos(search)
+      setVideos(v => v.concat(res.data.items))
+      setNextPageToken(res.data.nextPageToken)
+      setLoading(false)
     }
-  }, [isLoading, getData])
+    getData()
+  }, [search])
 
 
   return (
@@ -97,7 +94,7 @@ const PostCategory = (props) => {
         </div>
       </ScrollableAnchor>
       <div className="item-wrapper">
-        {videos.map((item, i) => (<PostItem key={i} item={item} onClick={() => setVideoId(item.id.videoId)} />))}
+        {mapItemsToComponent(status === 2 ? videos : videos.slice(0, 4), setVideoId)}
         <div className="loading-wrapper">
           {isLoading ? <Loading /> : null}
         </div>
@@ -112,7 +109,7 @@ const visible = ({ status }) => {
 
 const PostCategoryContent = styled.div`
   display: ${props => visible(props)};
-  margin: 1rem 0 3rem 0;
+  margin: 1rem 0 1rem 0;
   .category-title {
     font-size: 1.2rem;
     font-weight 550;
@@ -124,12 +121,24 @@ const PostCategoryContent = styled.div`
     cursor: pointer;
   }
   .loading-wrapper {
-    min-height: 10rem;
+    min-height: 5rem;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
   }
 `
 
 const checkProps = (prev, next) => {
-  return (prev.status === next.status)
+  if (prev.status !== next.status) {
+    return false
+  }
+  
+  if (prev.category.id !== next.category.id) {
+    return false
+  }
+  
+  return true
 }
 
 export default memo(PostCategory, checkProps)

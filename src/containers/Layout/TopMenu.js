@@ -13,18 +13,18 @@ const menus = [
     text: 'Home', url: '/home'
   },
   { 
-    text: 'Post', url: '/post' 
+    text: 'Youtube', url: '/post' 
   },
-  {
-    text: 'About', url: '/about'
-  },
-  { 
-    text: '메뉴1', 
-    child: [ 
-      { text: 'first', url: '/test1' }, 
-      { text: 'second', url: '/test2' }
-    ] 
-  },
+  // {
+  //   text: 'About', url: '/about'
+  // },
+  // { 
+  //   text: '메뉴1', 
+  //   child: [ 
+  //     { text: 'first', url: '/test1' }, 
+  //     { text: 'second', url: '/test2' }
+  //   ] 
+  // },
 ]
 
 
@@ -105,7 +105,7 @@ const TopMenu = () => {
         <div className="brand-name"><NavLink to="/">React Template</NavLink></div>
       </div>
       <div>
-        <Button className="btn-none" onClick={logout}>Logout</Button>  
+        <Button className="btn-none" onClick={logout}>Logout</Button>
       </div>
     </Header>
   )

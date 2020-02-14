@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
 import styled from "styled-components"
 
@@ -7,39 +7,69 @@ import PostViewer from "./PostViewer"
 import PostCategoryList from "./PostCategoryList"
 
 
-const initCategoryList = [
-  { keyword: '장삐쭈' },
-  { keyword: '노래모음' },
-  { keyword: '축구' },
-  { keyword: '농구' },
-  { keyword: '리그오브레전드' },
+const mockData = [
+  { id: 1, keyword: '노마드코더' },
+  { id: 2, keyword: '노래모음' },
+  { id: 3, keyword: '축구' },
+  { id: 4, keyword: '농구' },
+  { id: 5, keyword: '리그오브레전드' },
 ]
 
+
+/*
+  status
+  0 : 선택된 카테고리가 없을 경우
+  1 : 선택된 카테고리가 자신이 아닐 경우
+  2 : 선택된 카테고리가 자신일 경우
+*/
 const getStatus = (idx, selectedIdx) => (selectedIdx === -1) ? 0 : (selectedIdx !== idx) ? 1 : 2
 
 
 const PostContainer = () => {
-  const [categoryList, setCategoryList] = useState(initCategoryList)
+  const [categoryList, setCategoryList] = useState([])
   const [selectedVideoId, setSelectedVideoId] = useState(null)
-  const [selectedCategory, setSelectedCategory] = useState(-1)
+  const [selectedCategoryId, setSelectedCategoryId] = useState(-1)
 
 
   const handleAddCategory = (category) => {
-    setCategoryList(categoryList.concat([ category ]))
+    setCategoryList(v => v.concat([ category ]))
   }
+
+
+  const handleRemoveCategory = (id) => {
+    // 선택된 카테고리가 삭제될 경우 초기화.
+    setSelectedCategoryId(v => v === id ? -1 : v)
+    setCategoryList(v => v.filter(one => one.id !== id))
+  }
+
+  
+  const handleSortCategory = (target, over) => {
+    // TODO 서버 추가시 로직 변경.
+    setCategoryList(v => {
+      let overOrder = v.indexOf(over)
+      categoryList.splice(v.indexOf(target), 1)
+      return categoryList.slice(0, overOrder-1).concat([target]).concat(categoryList.slice(overOrder-1))
+    })
+  }
+
+
+  useEffect(() => {
+    // TODO 서버에서 조회하는 것으로 변경.
+    setCategoryList(v => v.concat(mockData))
+  }, [])
+
 
   return (
     <PostContent>
       <div className="category-wrapper">
-        {selectedVideoId && <PostViewer videoId={selectedVideoId} />}
+        {selectedVideoId && <PostViewer videoId={selectedVideoId} setVideoId={setSelectedVideoId} />}
         <div>
-          {categoryList.map((one, i) => (
+          {categoryList.map(one => (
             <PostCategory 
-              key={i}
-              categoryIdx={i}
-              status={getStatus(i, selectedCategory)}
+              key={one.id}
+              status={getStatus(one.id, selectedCategoryId)}
               setVideoId={setSelectedVideoId}
-              handleChangeSelectedCategory={setSelectedCategory}
+              handleChangeSelectedCategoryId={setSelectedCategoryId}
               category={one}
             />
           ))}
@@ -48,6 +78,8 @@ const PostContainer = () => {
       <PostCategoryList
         categoryList={categoryList}
         handleAddCategory={handleAddCategory}
+        handleRemoveCategory={handleRemoveCategory}
+        setCategoryList={setCategoryList}
       />
     </PostContent>
   )

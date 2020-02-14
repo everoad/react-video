@@ -16,11 +16,6 @@ const Loading = () => {
 
 
 const LoadingContent = styled.div`
-  display: flex;
-  width: 100%;
-  min-height: 150px;
-  align-items: center;
-  justify-content: center;
   @-webkit-keyframes spinner-border {
     to {
       -webkit-transform: rotate(360deg);
