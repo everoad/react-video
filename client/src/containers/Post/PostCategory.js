@@ -103,9 +103,11 @@ const PostCategory = (props) => {
   )
 }
 
+
 const visible = ({ status }) => {
   return (status === 0 || status === 2) ? 'block' : 'none'
 }
+
 
 const PostCategoryContent = styled.div`
   display: ${props => visible(props)};
@@ -129,6 +131,7 @@ const PostCategoryContent = styled.div`
   }
 `
 
+
 const checkProps = (prev, next) => {
   if (prev.status !== next.status) {
     return false
@@ -140,5 +143,6 @@ const checkProps = (prev, next) => {
   
   return true
 }
+
 
 export default memo(PostCategory, checkProps)

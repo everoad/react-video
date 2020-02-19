@@ -47,6 +47,7 @@ const PostCategoryList = (props) => {
     }
   }
 
+
   const handleClickRemove = (item) => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       handleRemoveCategory(item.id)
@@ -63,6 +64,9 @@ const PostCategoryList = (props) => {
     else {
       target = e.target
     }
+    if (target.tagName !== "LI") {
+      return
+    }
     dragRef.current = target
     dragRef.current.style.backgroundColor = "rgba(0,0,0,0.1)"
   }
@@ -71,6 +75,9 @@ const PostCategoryList = (props) => {
   const endDrop = () => {
     //TODO 버그 체크.
     dragRef.current.style.backgroundColor = "rgba(0,0,0,0.05)"
+    if (!overRef.current) {
+      return
+    }
     var from = Number(dragRef.current.dataset.id)
     var to = Number(overRef.current.dataset.id)
     if(from < to) to--
@@ -81,8 +88,8 @@ const PostCategoryList = (props) => {
 
   const dragOver = (e) => {
     e.preventDefault()
-    if(e.target.getAttribute("draggable") !== "true") return
-    if(!e.target.dataset || e.target.dataset.id === dragRef.current.dataset.id) return 
+    //if(e.target.getAttribute("draggable") !== "true") return
+    if(e.target.tagName !== "LI" || e.target.dataset.id === dragRef.current.dataset.id) return 
     overRef.current = e.target
     e.currentTarget.insertBefore(dragRef.current, e.target)
   }
@@ -167,6 +174,7 @@ const PostCategoryListContent = styled.div`
 
 
 const checkProps = (prev, next) => {
+  console.log(prev, next)
   if (JSON.stringify(prev.categoryList) !== JSON.stringify(next.categoryList)) {
     return false
   }

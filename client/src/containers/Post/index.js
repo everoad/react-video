@@ -43,16 +43,6 @@ const PostContainer = () => {
   }
 
   
-  const handleSortCategory = (target, over) => {
-    // TODO 서버 추가시 로직 변경.
-    setCategoryList(v => {
-      let overOrder = v.indexOf(over)
-      categoryList.splice(v.indexOf(target), 1)
-      return categoryList.slice(0, overOrder-1).concat([target]).concat(categoryList.slice(overOrder-1))
-    })
-  }
-
-
   useEffect(() => {
     // TODO 서버에서 조회하는 것으로 변경.
     setCategoryList(v => v.concat(mockData))
