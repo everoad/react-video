@@ -1,12 +1,12 @@
 import React, { useState, memo } from "react"
-import { useHistory, NavLink } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 
 import styled from "styled-components"
 
 import baseStyle from "../../lib/style/base"
 
 import { Button } from "../../components/Element"
-
+import LoginContainer  from "../Login"
 
 const menus = [
   {
@@ -29,7 +29,7 @@ const menus = [
 
 
 
-const MenuItem = ({ item }) => {
+const MenuItem = memo(({ item }) => {
   const [visible, setVisible] = useState(false)
   const [active, setActive] = useState(false)
 
@@ -82,32 +82,32 @@ const MenuItem = ({ item }) => {
   return (
     <li><NavLink activeClassName="menu-active" isActive={isActive} exact to={item.url}>{item.text}</NavLink></li>
   )
-}
+})
 
 
 
 const TopMenu = () => {
-  const history = useHistory()
-
-  const logout = () => {
-    sessionStorage.removeItem("token")
-    history.push("/login")
-  }
-
+  const [open, setOpen] = useState(false)
+  
   return (
-    <Header>
-      <div>
-        <ul className="menu">
-          {menus.map(item => <MenuItem key={item.text} item={item} />)}
-        </ul>
-      </div>
-      <div>
-        <div className="brand-name"><NavLink to="/">React Template</NavLink></div>
-      </div>
-      <div>
-        <Button className="btn-none" onClick={logout}>Logout</Button>
-      </div>
-    </Header>
+    <>
+      <Header>
+        <div>
+          <ul className="menu">
+            {menus.map(item => <MenuItem key={item.text} item={item} />)}
+          </ul>
+        </div>
+        <div>
+          <div className="brand-name">
+            <NavLink to="/">React Template</NavLink>
+          </div>
+        </div>
+        <div>
+          <Button className="btn-none" onClick={() => setOpen(true)}>LOGIN</Button>
+        </div>
+      </Header>
+      {open && <LoginContainer handleClose={() => setOpen(false)} />}
+    </>
   )
 }
 

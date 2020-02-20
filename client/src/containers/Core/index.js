@@ -1,6 +1,8 @@
 import React from "react"
 
 
+import LoginContainer from "../Login"
+
 class Core extends React.Component {
   
   state = {
@@ -9,15 +11,15 @@ class Core extends React.Component {
     }
   }
 
-  constructor(props) {
-    this.props = props
-  }
-
-
-
   render() {
+    const {
+      login
+    } = this.state
+
     return (
-      <div></div>
+      <>
+        {login.open && LoginContainer}
+      </>
     )
   }
 }

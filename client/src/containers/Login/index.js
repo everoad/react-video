@@ -1,13 +1,11 @@
 import React, { useRef, useEffect } from "react"
 
-import { Redirect, useHistory } from "react-router-dom"
-
 import useInputs from "../../hooks/useInputs"
-
 
 import { Button, Input } from "../../components/Element"
 
 import styled from "styled-components"
+import baseStyles from "../../lib/style/base"
 
 
 const userState = { 
@@ -15,9 +13,8 @@ const userState = {
   password: '' 
 }
 
-const LoginContainer = () => {
+const LoginContainer = ({ handleClose }) => {
   const [user, onChange] = useInputs(userState)
-  const history = useHistory()
   const userIdRef = useRef()
   const passwdRef = useRef()
 
@@ -27,18 +24,14 @@ const LoginContainer = () => {
 
   const handleClick = () => {
     sessionStorage.setItem("token", "hihi")
-    history.push("/home")
-  }
-
-  if (sessionStorage.getItem('token')) {
-    return <Redirect to="/home" />
   }
 
   return (
-    <Content>
+    <LoginContent>
       <section>
         <header>
-          <h2>LOGIN</h2>
+          <span>LOGIN</span>
+          <span className="modal-close" onClick={handleClose}>×</span>
         </header>
         <div>
           <Input
@@ -55,28 +48,42 @@ const LoginContainer = () => {
           >LOGIN</Button>
         </div>
       </section>
-    </Content>
+    </LoginContent>
   )
 }
 
 
-const Content = styled.div`
+const LoginContent = styled.div`
   display: flex;
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   justify-content: center;
   align-items: center;
-  section {
+  background-color: rgba(0,0,0,0.5);
+  z-index: 9999;
+  >section {
+    background-color: #fff;
     padding: 1rem;
     margin-bottom: 10rem;
     width: 350px;
     box-shadow: 0px 0px 2px #333;
     border-radius: 3px;
     >header {
-      text-align: center;
+      text-align:center;
+      padding-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: 550;
+      >span:last-child {
+        float: right;
+        cursor: pointer;
+        margin-top: -0.5rem;
+        &:hover {
+          color: ${baseStyles.color.primary.active};
+        }
+      }
     }
     >div>input {
       margin-bottom: 0.5rem;
@@ -86,5 +93,6 @@ const Content = styled.div`
     }
   }
 `
+
 
 export default LoginContainer

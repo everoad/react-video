@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class VideoServiceImpl implements VideoService {
 
+  
   @Override
   public List<VideoDTO> findVideosAPI(String type, SearchDTO searchDTO) throws Exception {
     VideoDTO dto = new VideoDTO();
@@ -24,4 +25,5 @@ public class VideoServiceImpl implements VideoService {
     dto.setId(String.valueOf(api.getTest()));
     return Arrays.asList(dto);
   }
+
 }
