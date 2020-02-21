@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef } from "react"
 
 import styled from "styled-components"
 
@@ -17,7 +17,7 @@ const PostCategoryList = (props) => {
     categoryList,
     handleAddCategory,
     handleRemoveCategory,
-    setCategoryList
+    updateCategories
   } = props
 
 
@@ -82,7 +82,7 @@ const PostCategoryList = (props) => {
     var to = Number(overRef.current.dataset.id)
     if(from < to) to--
     categoryList.splice(to, 0, categoryList.splice(from, 1)[0])
-    setCategoryList([...categoryList])
+    updateCategories(categoryList)
   }
 
 
@@ -173,13 +173,13 @@ const PostCategoryListContent = styled.div`
 `
 
 
-const checkProps = (prev, next) => {
-  console.log(prev, next)
-  if (JSON.stringify(prev.categoryList) !== JSON.stringify(next.categoryList)) {
-    return false
-  }
-  return true
-}
+// const checkProps = (prev, next) => {
+//   console.log(prev, next)
+//   if (JSON.stringify(prev.categoryList) !== JSON.stringify(next.categoryList)) {
+//     return false
+//   }
+//   return true
+// }
 
 
 export default PostCategoryList

@@ -23,7 +23,7 @@ const LoginContainer = ({ handleClose }) => {
   }, [])
 
   const handleClick = () => {
-    sessionStorage.setItem("token", "hihi")
+    handleClose()
   }
 
   return (
@@ -42,10 +42,7 @@ const LoginContainer = ({ handleClose }) => {
             type="password" autoComplete="current-password" placeholder="Password.." name="password" 
             value={user.password} onChange={onChange} ref={passwdRef} maxLength={30}
           />
-          <Button 
-            className="btn-primary btn-block btn-lg" 
-            onClick={handleClick}
-          >LOGIN</Button>
+          <Button className="btn-primary btn-block btn-lg" onClick={handleClick}>LOGIN</Button>
         </div>
       </section>
     </LoginContent>

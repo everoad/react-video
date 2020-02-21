@@ -8,24 +8,8 @@ import baseStyle from "../../lib/style/base"
 import { Button } from "../../components/Element"
 import LoginContainer  from "../Login"
 
-const menus = [
-  {
-    text: 'Home', url: '/home'
-  },
-  { 
-    text: 'Youtube', url: '/post' 
-  },
-  // {
-  //   text: 'About', url: '/about'
-  // },
-  // { 
-  //   text: '메뉴1', 
-  //   child: [ 
-  //     { text: 'first', url: '/test1' }, 
-  //     { text: 'second', url: '/test2' }
-  //   ] 
-  // },
-]
+import menu from "../../menu"
+
 
 
 
@@ -94,7 +78,7 @@ const TopMenu = () => {
       <Header>
         <div>
           <ul className="menu">
-            {menus.map(item => <MenuItem key={item.text} item={item} />)}
+            {menu.map(item => <MenuItem key={item.text} item={item} />)}
           </ul>
         </div>
         <div>

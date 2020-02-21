@@ -1,18 +1,13 @@
 import React from "react"
 import { Switch, Route } from "react-router-dom"
 
-import AboutContainer from "./About"
-import PostContainer from "./Post"
-import HomeContainer from "./Home"
 
+import menu from "../menu"
 
 const MainRoutes = () => {
   return (
     <Switch>
-      <Route path="/home" exact component={HomeContainer} />
-      <Route path="/post" exact component={PostContainer} />
-      <Route path="/about" component={AboutContainer} />
-      <Route path="/test1" component={PostContainer} />
+      {menu.map((item, i) => (<Route key={i} path={item.url} exact component={item.component} />))}
     </Switch>
   )
 }

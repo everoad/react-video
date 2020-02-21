@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from "react"
-
+import React, { useState } from "react"
+import { useQuery, useMutation } from "@apollo/react-hooks"
 import styled from "styled-components"
 
 import PostCategory from "./PostCategory"
 import PostViewer from "./PostViewer"
 import PostCategoryList from "./PostCategoryList"
 
+import Loading from "../../components/Loading"
 
-const mockData = [
-  { id: 1, keyword: '노마드코더' },
-  { id: 2, keyword: '노래모음' },
-  { id: 3, keyword: '축구' },
-  { id: 4, keyword: '농구' },
-  { id: 5, keyword: '리그오브레전드' },
-]
+import { 
+  GET_CATEGORIES, 
+  ADD_CATEGORY, 
+  UPDATE_CATEGORIES, 
+  REMOVE_CATEGORY 
+} from "../../services/query/Category"
+
 
 
 /*
@@ -26,50 +27,86 @@ const getStatus = (idx, selectedIdx) => (selectedIdx === -1) ? 0 : (selectedIdx 
 
 
 const PostContainer = () => {
-  const [categoryList, setCategoryList] = useState([])
   const [selectedVideoId, setSelectedVideoId] = useState(null)
   const [selectedCategoryId, setSelectedCategoryId] = useState(-1)
 
+  const { data, loading } = useQuery(GET_CATEGORIES)
+  
+  const [addCategory] = useMutation(ADD_CATEGORY, {
+    update(cache, { data: { addCategory } }) {
+      const { categories } = cache.readQuery({ query: GET_CATEGORIES })     
+      cache.writeQuery({
+        query: GET_CATEGORIES,
+        data: { categories: [ ...categories, addCategory ] }
+      })
+    }
+  })
 
-  const handleAddCategory = (category) => {
-    setCategoryList(v => v.concat([ category ]))
-  }
+
+  const [removeCategory] = useMutation(REMOVE_CATEGORY, {
+    update(cache, { data: { removeCategory }}) {
+      const { categories } = cache.readQuery({ query: GET_CATEGORIES })
+      cache.writeQuery({
+        query: GET_CATEGORIES,
+        data: { categories: categories.filter(v => v.id !== removeCategory.id) }
+      })
+    }
+  })
 
 
+  const [updateCategories] = useMutation(UPDATE_CATEGORIES, {
+    update(cache, { data: { updateCategories }}) {
+      cache.writeQuery({
+        query: GET_CATEGORIES,
+        data: { categories: updateCategories }
+      })
+    }
+  })
+
+  
+  const handleAddCategory = (category) => addCategory({ variables: category })
+
+
+  const handleUpdateCategories = (categories) => updateCategories({ variables : { categories: JSON.stringify(categories)} })
+  
+  
   const handleRemoveCategory = (id) => {
     // 선택된 카테고리가 삭제될 경우 초기화.
     setSelectedCategoryId(v => v === id ? -1 : v)
-    setCategoryList(v => v.filter(one => one.id !== id))
+    removeCategory({ variables: { id } })
   }
+    
 
-  
-  useEffect(() => {
-    // TODO 서버에서 조회하는 것으로 변경.
-    setCategoryList(v => v.concat(mockData))
-  }, [])
-
-
+  if (loading) return <Loading screen={true} />
+    
   return (
     <PostContent>
       <div className="category-wrapper">
         {selectedVideoId && <PostViewer videoId={selectedVideoId} setVideoId={setSelectedVideoId} />}
         <div>
-          {categoryList.map(one => (
-            <PostCategory 
-              key={one.id}
-              status={getStatus(one.id, selectedCategoryId)}
-              setVideoId={setSelectedVideoId}
-              handleChangeSelectedCategoryId={setSelectedCategoryId}
-              category={one}
-            />
-          ))}
+          {
+            data.categories.length > 0 ? 
+            data.categories.map(one => (
+              <PostCategory 
+                key={one.id}
+                status={getStatus(one.id, selectedCategoryId)}
+                setVideoId={setSelectedVideoId}
+                handleChangeSelectedCategoryId={setSelectedCategoryId}
+                category={one}
+              />
+            ))
+            :
+            <div className="no-category">
+              카테고리를 추가해 주세요.
+            </div>
+          }
         </div>
       </div>
       <PostCategoryList
-        categoryList={categoryList}
+        categoryList={data.categories}
         handleAddCategory={handleAddCategory}
         handleRemoveCategory={handleRemoveCategory}
-        setCategoryList={setCategoryList}
+        updateCategories={handleUpdateCategories}
       />
     </PostContent>
   )
@@ -80,6 +117,13 @@ const PostContent = styled.div`
     width: calc(100% - 250px);
     display: inline-block;
     vertical-align: top;
+  }
+  .no-category {
+    width: 100%;
+    padding: 5rem 0;
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
   }
 `
 

@@ -1,9 +1,8 @@
 import React from "react"
+import { useHistory } from "react-router-dom"
 
 import TopMenu from "./Layout/TopMenu"
 import styled from "styled-components"
-
-//import Core from "../containers/Core"
 
 import baseStyle from "../lib/style/base"
 import MainRoutes from "./routes"
@@ -11,6 +10,10 @@ import MainRoutes from "./routes"
 
 
 const MainContainer = () => {
+  const history = useHistory()
+  if (window.location.pathname === "/") {
+    history.push("/home")
+  }
   return (
     <main>
       <TopMenu />

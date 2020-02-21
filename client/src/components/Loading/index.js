@@ -4,9 +4,9 @@ import styled from "styled-components"
 
 import baseStyles from "../../lib/style/base"
 
-const Loading = () => {
+const Loading = ({ screen = false }) => {
   return (
-    <LoadingContent>
+    <LoadingContent className={screen ? 'full' : ''}>
       <div className="spinner-border text-danger">
         <span className="sr-only"></span>
       </div>
@@ -16,6 +16,17 @@ const Loading = () => {
 
 
 const LoadingContent = styled.div`
+  &.full {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0,0,0,0);
+    justify-content: center;
+    align-items: center;
+  }
   @-webkit-keyframes spinner-border {
     to {
       -webkit-transform: rotate(360deg);
