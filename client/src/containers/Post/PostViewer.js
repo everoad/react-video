@@ -37,9 +37,7 @@ const PostViewer = ({ videoId, setVideoId }) => {
   }, 300), [])
 
 
-  const handleCloseViewer = () => {
-    setVideoId(null)
-  }
+  const handleCloseViewer = () => setVideoId(null)
 
 
   useEffect(() => {

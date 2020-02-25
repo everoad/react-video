@@ -31,7 +31,7 @@ const typeDefs = `
 `
 
 const mockData = [
-  { key: 1, keyword: "노마드코더" }
+  { id: 1, keyword: "노마드코더" }
 ]
 
 

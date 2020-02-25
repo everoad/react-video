@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react"
+import React, { useRef, useEffect, useState } from "react"
 
 import useInputs from "../../hooks/useInputs"
 
@@ -15,19 +15,24 @@ const userState = {
 
 const LoginContainer = ({ handleClose }) => {
   const [user, onChange] = useInputs(userState)
+  const [fade, setFade] = useState(false)
   const userIdRef = useRef()
   const passwdRef = useRef()
 
+
   useEffect(() => {
+    setFade(true)
     userIdRef.current.focus()
   }, [])
 
-  const handleClick = () => {
+
+  const login = () => {
     handleClose()
   }
 
+  
   return (
-    <LoginContent>
+    <LoginContent className={fade ? "in" : ""}>
       <section>
         <header>
           <span>LOGIN</span>
@@ -42,7 +47,7 @@ const LoginContainer = ({ handleClose }) => {
             type="password" autoComplete="current-password" placeholder="Password.." name="password" 
             value={user.password} onChange={onChange} ref={passwdRef} maxLength={30}
           />
-          <Button className="btn-primary btn-block btn-lg" onClick={handleClick}>LOGIN</Button>
+          <Button className="btn-primary btn-block btn-lg" onClick={login}>LOGIN</Button>
         </div>
       </section>
     </LoginContent>
@@ -61,6 +66,11 @@ const LoginContent = styled.div`
   align-items: center;
   background-color: rgba(0,0,0,0.5);
   z-index: 9999;
+  opacity: 0;
+  &.in {
+    transition: opacity 0.3s;
+    opacity: 1;
+  }
   >section {
     background-color: #fff;
     padding: 1rem;
